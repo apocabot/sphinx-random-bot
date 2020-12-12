@@ -31,28 +31,28 @@ function init() {
     message.channel.send({ embed })
   })
 
-  client.on(msg_types.MESSAGE, async (message) => {
-    const arr = message.content.split(' ')
-    if (arr.length < 2) return
-    if (arr[0] !== '/num') return
-    const cmd = parseInt(arr[1])
-    const urlString = url + cmd
-    console.log(urlString)
+  // client.on(msg_types.MESSAGE, async (message) => {
+  //   const arr = message.content.split(' ')
+  //   if (arr.length < 2) return
+  //   if (arr[0] !== '/num') return
+  //   const cmd = parseInt(arr[1])
+  //   const urlString = url + cmd
+  //   console.log(urlString)
 
-    const r = await fetch(urlString)
-    console.log(r)
-    if (!r.ok) return
-    const j = await r.json()
-    console.log(j)
+  //   const r = await fetch(urlString)
+  //   console.log(r)
+  //   if (!r.ok) return
+  //   const j = await r.json()
+  //   console.log(j)
     
 
-    const embed = new Sphinx.MessageEmbed()
-      .setAuthor('Number Bot')
-      .setTitle('Number Fact:')
-      .addDescription(j)
-      .setThumbnail(botSVG)
-    message.channel.send({ embed })
-  })
+  //   const embed = new Sphinx.MessageEmbed()
+  //     .setAuthor('Number Bot')
+  //     .setTitle('Number Fact:')
+  //     .addDescription(j)
+  //     .setThumbnail(botSVG)
+  //   message.channel.send({ embed })
+  // })
 }
 
 const botSVG = `<svg viewBox="64 64 896 896" height="12" width="12" fill="white">
