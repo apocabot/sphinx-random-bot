@@ -1,32 +1,32 @@
 import 'regenerator-runtime/runtime.js';
 import * as Sphinx from 'sphinx-bot'
 import * as fetch from 'node-fetch'
+require('dotenv').config();
 const msg_types = Sphinx.MSG_TYPE
 
 let initted = false
+let client
 
 /*
 // SPHINX_TOKEN contains id,secret,and url
 // message.channel.send sends to the url the data
 */
 
-const token = process.env.TOKEN
 const sphinxToken = process.env.SPHINX_TOKEN
-const url = 'https://pro-api.coinmarketcap.com/v1/'
-const crypto_route = 'cryptocurrency/quotes/latest'
-const global_route = 'global-metrics/quotes/latest'
+const url = 'http://numbersapi.com'
+
 
 function init() {
   if (initted) return
   initted = true
 
-  const client = new Sphinx.Client()
+  client = new Sphinx.Client()
   client.login(sphinxToken)
 
   client.on(msg_types.INSTALL, async (message) => {
     const embed = new Sphinx.MessageEmbed()
-      .setAuthor('BitcoinBot')
-      .setDescription('Welcome to Bitcoin Bot!')
+      .setAuthor('Num Bot')
+      .setDescription('Welcome to Num Bot! Enter /num followed by a space and any integer to get a number fact!')
       .setThumbnail(botSVG)
     message.channel.send({ embed })
   })
@@ -34,97 +34,24 @@ function init() {
   client.on(msg_types.MESSAGE, async (message) => {
     const arr = message.content.split(' ')
     if (arr.length < 2) return
-    if (arr[0] !== '/btc') return
-    const cmd = arr[1]
+    if (arr[0] !== '/num') return
+    const cmd = parseInt(arr[1])
+    const urlString = url + cmd
+    console.log(urlString)
 
-    switch (cmd) {
+    const r = await fetch(urlString)
+    console.log(r)
+    if (!r.ok) return
+    const j = await r.json()
+    console.log(j)
+    
 
-      case 'price':
-        console.log("price")
-        const isAdmin = message.member.roles.find(role => role.name === 'Admin')
-        console.log('=> IS ADMIN?', isAdmin)
-        try {
-          const r = await fetch(url + crypto_route + '?symbol=BTC&convert=USD', {
-            headers: { 'X-CMC_PRO_API_KEY': token, 'Accept': 'application/json' }
-          })
-          if (!r.ok) return
-          const j = await r.json()
-          const price = '$' + j.data.BTC.quote.USD.price.toFixed(2)
-          const percentChange24 = j.data.BTC.quote.USD.percent_change_24h
-          const percentChange24String = percentChange24.toFixed(2) + '%'
-          const changeColor = percentChange24 > 0 ? '#00c991' : '#e74744'
-          const embed = new Sphinx.MessageEmbed()
-            .setAuthor('BitcoinBot')
-            .setTitle('Bitcoin Price:')
-            .addFields([
-              { name: 'Price:', value: price, inline: true },
-              { name: '24 Hour Change:', value: percentChange24String, inline: true, color: changeColor }
-            ])
-            .setThumbnail(botSVG)
-          message.channel.send({ embed })
-        } catch (e) {
-          console.log('BTC bot error', e)
-        }
-        return
-
-      case 'sats':
-        console.log("sats")
-        try {
-          const r = await fetch(url + crypto_route + '?symbol=BTC&convert=USD', {
-            headers: { 'X-CMC_PRO_API_KEY': token, 'Accept': 'application/json' }
-          })
-          if (!r.ok) return
-          const j = await r.json()
-          const price = j.data.BTC.quote.USD.price / 100000000
-          const sats = Math.round(1 / price) + ''
-          const embed = new Sphinx.MessageEmbed()
-            .setAuthor('BitcoinBot')
-            .setTitle('Sats:')
-            .addFields([
-              { name: 'Sats per dollar:', value: sats, inline: true },
-            ])
-            .setThumbnail(botSVG)
-          message.channel.send({ embed })
-        } catch (e) {
-          console.log('BTC bot error', e)
-        }
-        return
-
-      case 'dominance':
-        console.log("dominance")
-        try {
-          const r = await fetch(url + global_route, {
-            headers: { 'X-CMC_PRO_API_KEY': token, 'Accept': 'application/json' }
-          })
-          if (!r.ok) return
-          const j = await r.json()
-          const d = j.data.btc_dominance.toFixed(2) + '%'
-          const embed = new Sphinx.MessageEmbed()
-            .setAuthor('BitcoinBot')
-            .setTitle('BTC Dominance:')
-            .addFields([
-              { name: 'BTC Dominance:', value: d, inline: true },
-            ])
-            .setThumbnail(botSVG)
-          message.channel.send({ embed })
-        } catch (e) {
-          console.log('BTC bot error', e)
-        }
-        return
-
-      default:
-        const embed = new Sphinx.MessageEmbed()
-          .setAuthor('BitcoinBot')
-          .setTitle('BitcoinBot Commands:')
-          .addFields([
-            { name: 'Print BTC price', value: '/btc price' },
-            { name: 'Sats per dollar', value: '/btc sats' },
-            { name: 'Help', value: '/btc help' }
-          ])
-          .setThumbnail(botSVG)
-        message.channel.send({ embed })
-        return
-    }
+    const embed = new Sphinx.MessageEmbed()
+      .setAuthor('Number Bot')
+      .setTitle('Number Fact:')
+      .addDescription(j)
+      .setThumbnail(botSVG)
+    message.channel.send({ embed })
   })
 }
 
