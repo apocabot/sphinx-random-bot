@@ -8,6 +8,10 @@ var Sphinx = _interopRequireWildcard(require("sphinx-bot"));
 
 var fetch = _interopRequireWildcard(require("node-fetch"));
 
+var _axios = _interopRequireDefault(require("axios"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -41,12 +45,13 @@ function init() {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              console.log('=> Installing');
               embed = new Sphinx.MessageEmbed().setAuthor('Num Bot').setDescription('Welcome to Num Bot! Enter /num followed by a space and any integer to get a number fact!').setThumbnail(botSVG);
               message.channel.send({
                 embed: embed
               });
 
-            case 2:
+            case 3:
             case "end":
               return _context.stop();
           }
@@ -60,7 +65,7 @@ function init() {
   }());
   client.on(msg_types.MESSAGE, /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(message) {
-      var arr, cmd, urlString, r, j, embed;
+      var arr, cmd, urlString, printOut, embed;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -84,35 +89,15 @@ function init() {
 
             case 5:
               cmd = parseInt(arr[1]);
-              urlString = url + cmd;
+              urlString = url + toString(cmd);
               console.log(urlString);
-              _context2.next = 10;
-              return fetch(urlString);
-
-            case 10:
-              r = _context2.sent;
-              console.log(r);
-
-              if (r.ok) {
-                _context2.next = 14;
-                break;
-              }
-
-              return _context2.abrupt("return");
-
-            case 14:
-              _context2.next = 16;
-              return r.json();
-
-            case 16:
-              j = _context2.sent;
-              console.log(j);
-              embed = new Sphinx.MessageEmbed().setAuthor('Number Bot').setTitle('Number Fact:').addDescription(j).setThumbnail(botSVG);
+              printOut = fetchData(urlString);
+              embed = new Sphinx.MessageEmbed().setAuthor('Number Bot').setTitle('Number Fact:').addDescription(printOut).setThumbnail(botSVG);
               message.channel.send({
                 embed: embed
               });
 
-            case 20:
+            case 11:
             case "end":
               return _context2.stop();
           }
@@ -128,4 +113,14 @@ function init() {
 
 var botSVG = "<svg viewBox=\"64 64 896 896\" height=\"12\" width=\"12\" fill=\"white\">\n  <path d=\"M300 328a60 60 0 10120 0 60 60 0 10-120 0zM852 64H172c-17.7 0-32 14.3-32 32v660c0 17.7 14.3 32 32 32h680c17.7 0 32-14.3 32-32V96c0-17.7-14.3-32-32-32zm-32 660H204V128h616v596zM604 328a60 60 0 10120 0 60 60 0 10-120 0zm250.2 556H169.8c-16.5 0-29.8 14.3-29.8 32v36c0 4.4 3.3 8 7.4 8h729.1c4.1 0 7.4-3.6 7.4-8v-36c.1-17.7-13.2-32-29.7-32zM664 508H360c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h304c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8z\" />\n</svg>";
 init();
+
+var fetchData = function fetchData(url) {
+  return _axios.default.get(url).then(function (res) {
+    //handle success
+    console.log(res);
+    return res;
+  }).catch(function (err) {
+    console.log(err);
+  });
+};
 //# sourceMappingURL=index.js.map
