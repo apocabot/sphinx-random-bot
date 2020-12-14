@@ -14,7 +14,7 @@ let client
 */
 
 const sphinxToken = process.env.SPHINX_TOKEN
-const url = 'http://numbersapi.com'
+const url = 'http://numbersapi.com/'
 
 
 async function init() {

@@ -31,7 +31,7 @@ var client;
 */
 
 var sphinxToken = process.env.SPHINX_TOKEN;
-var url = 'http://numbersapi.com';
+var url = 'http://numbersapi.com/';
 
 function init() {
   return _init.apply(this, arguments);
