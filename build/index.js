@@ -146,7 +146,7 @@ var fetchData = function fetchData(url) {
   return _axios.default.get(url).then(function (res) {
     //handle success
     console.log(res);
-    return res;
+    return res.data;
   }).catch(function (err) {
     console.log(err);
   });
