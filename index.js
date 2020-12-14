@@ -1,6 +1,7 @@
 import 'regenerator-runtime/runtime.js';
 import * as Sphinx from 'sphinx-bot'
 import * as fetch from 'node-fetch'
+import axios from 'axios';
 require('dotenv').config();
 const msg_types = Sphinx.MSG_TYPE
 
@@ -24,6 +25,7 @@ function init() {
   client.login(sphinxToken)
 
   client.on(msg_types.INSTALL, async (message) => {
+    console.log('=> Installing')
     const embed = new Sphinx.MessageEmbed()
       .setAuthor('Num Bot')
       .setDescription('Welcome to Num Bot! Enter /num followed by a space and any integer to get a number fact!')
@@ -36,20 +38,16 @@ function init() {
     if (arr.length < 2) return
     if (arr[0] !== '/num') return
     const cmd = parseInt(arr[1])
-    const urlString = url + cmd
+    const urlString = url + toString(cmd)
     console.log(urlString)
 
-    const r = await fetch(urlString)
-    console.log(r)
-    if (!r.ok) return
-    const j = await r.json()
-    console.log(j)
+    const printOut = fetchData(urlString)
     
 
     const embed = new Sphinx.MessageEmbed()
       .setAuthor('Number Bot')
       .setTitle('Number Fact:')
-      .addDescription(j)
+      .addDescription(printOut)
       .setThumbnail(botSVG)
     message.channel.send({ embed })
   })
@@ -60,3 +58,15 @@ const botSVG = `<svg viewBox="64 64 896 896" height="12" width="12" fill="white"
 </svg>`
 
 init()
+
+const fetchData = (url) => {
+  return axios.get(url)
+  .then(res =>{
+    //handle success
+    console.log(res);
+    return res;
+  })
+  .catch(err => {
+    console.log(err);
+  })
+}
