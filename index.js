@@ -17,7 +17,7 @@ const sphinxToken = process.env.SPHINX_TOKEN
 const url = 'http://numbersapi.com'
 
 
-function init() {
+async function init() {
   if (initted) return
   initted = true
 
@@ -37,17 +37,16 @@ function init() {
     const arr = message.content.split(' ')
     if (arr.length < 2) return
     if (arr[0] !== '/num') return
-    const cmd = parseInt(arr[1])
-    const urlString = url + toString(cmd)
+    const urlString = url + arr[1]
     console.log(urlString)
 
-    const printOut = fetchData(urlString)
+    const printOut = await fetchData(urlString)
     
 
     const embed = new Sphinx.MessageEmbed()
       .setAuthor('Number Bot')
       .setTitle('Number Fact:')
-      .addDescription(printOut)
+      .setDescription(printOut)
       .setThumbnail(botSVG)
     message.channel.send({ embed })
   })
