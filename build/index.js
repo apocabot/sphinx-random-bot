@@ -105,18 +105,19 @@ function _init() {
 
                       case 5:
                         urlString = url + arr[1];
-                        console.log(urlString);
+                        console.log('URL String', urlString);
                         _context2.next = 9;
                         return fetchData(urlString);
 
                       case 9:
                         printOut = _context2.sent;
+                        console.log('printout', printOut);
                         embed = new Sphinx.MessageEmbed().setAuthor('Number Bot').setTitle('Number Fact:').setDescription(printOut).setThumbnail(botSVG);
                         message.channel.send({
                           embed: embed
                         });
 
-                      case 12:
+                      case 13:
                       case "end":
                         return _context2.stop();
                     }
@@ -145,7 +146,7 @@ init();
 var fetchData = function fetchData(url) {
   return _axios.default.get(url).then(function (res) {
     //handle success
-    console.log(res);
+    console.log('res.data', res.data);
     return res.data;
   }).catch(function (err) {
     console.log(err);

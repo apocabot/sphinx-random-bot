@@ -38,10 +38,10 @@ async function init() {
     if (arr.length < 2) return
     if (arr[0] !== '/num') return
     const urlString = url + arr[1]
-    console.log(urlString)
+    console.log('URL String', urlString)
 
     const printOut = await fetchData(urlString)
-    
+    console.log('printout', printOut)
 
     const embed = new Sphinx.MessageEmbed()
       .setAuthor('Number Bot')
@@ -62,7 +62,7 @@ const fetchData = (url) => {
   return axios.get(url)
   .then(res =>{
     //handle success
-    console.log(res);
+    console.log('res.data', res.data)
     return res.data;
   })
   .catch(err => {
